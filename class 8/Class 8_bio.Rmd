@@ -2,7 +2,9 @@
 title: "Class_8_bio"
 author: "Caroline Iacuaniello"
 date: "4/27/2018"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
