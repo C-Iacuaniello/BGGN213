@@ -1,0 +1,122 @@
+---
+title: "class_6"
+author: "caroline iacuaniello"
+date: "April 20, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+library(bio3d)
+#package is in library
+```
+
+```{r}
+# Can you improve this analysis code?
+library(bio3d)
+# a drug target, want to know what do. comparing 3 structures.
+s1 <- read.pdb("4AKE") # kinase with drug
+s2 <- read.pdb("1AKE") # kinase no drug
+s3 <- read.pdb("1E4Y") # kinase with drug
+#trim.pdb trims a pdb object based on selection of atoms
+
+s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s2.chainA <- trim.pdb(s2, chain="A", elety="CA")
+s3.chainA <- trim.pdb(s1, chain="A", elety="CA")
+
+s1.b <- s1.chainA$atom$b
+s2.b <- s2.chainA$atom$b
+s3.b <- s3.chainA$atom$b
+# Black, grey boxes are regions between peaks. ALpha helixes. 
+
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+plotb3(s2.b, sse=s2.chainA, typ="l", ylab="Bfactor")
+plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
+```
+
+```{r}
+s1 <- read.pdb("4AKE")
+s1
+```
+
+```{r}
+library(bio3d)
+# a drug target, want to know what do. comparing 3 structures. input is the protein database?
+
+
+                
+
+x <- "4AKE"
+
+sx <- read.pdb(x) # kinase with drug
+
+#trim.pdb trims a pdb object based on selection of atoms
+
+sx.chainA <- trim.pdb(sx, chain="A", elety="CA")
+
+
+sx.b <- sx.chainA$atom$b
+
+# Black, grey boxes are regions between peaks. ALpha helixes. 
+# to combine three curves use line fn
+
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+
+```
+
+```{r}
+sx
+```
+```{r}
+x <- "4AKE"
+pdb_function <- function(x){
+sx <- read.pdb(x)
+sx.chainA <- trim.pdb(sx, chain="A", elety="CA")
+sx.b <- sx.chainA$atom$b
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")}
+x
+pdb_function
+pdb_function(x)
+```
+
+```{r}
+x <- "4AKE"
+y <- "1AKE"
+z <- "1E4Y"
+protein <- c(x, y, z)
+pdb_function <- function(protein){
+sprotein <- read.pdb(protein)
+sprotein.chainA <- trim.pdb(sprotein, chain="A", elety="CA")
+sprotein.b <- sprotein.chainA$atom$b
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")}
+protein
+pdb_function
+pdb_function(protein)
+```
+```{r}
+protein <- x(c("4AKE", "1AKE", "1E4Y"))
+
+```
+

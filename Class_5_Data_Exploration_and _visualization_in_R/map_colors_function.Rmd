@@ -1,0 +1,111 @@
+---
+title: "map_colors_function"
+author: Caroline Iacuaniello
+date: 4/20/18
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Lets look at the poor old function
+
+This is the function code from student
+```{r}
+# old function
+
+map.colors <- function (value,high.low,palette) {
+  proportion <- ((value-high.low[1])/(high.low[2]-high.low[1]))
+  index <- round ((length(palette)-1)*proportion)+1
+  return (palette[index])}
+```
+Now lets try to understand this function....
+```{r}
+
+map.colors2 <- function(x, high.low = range(x), palette = cm.colors(100)) {
+  # Determine where in the 'high.low' range our values of 'x' lie.
+# to the input colors vector 'palette'
+  
+  percent <- ((x - high.low[1]) / (high.low[2] - high.low[1]))
+#where in the 'vector of colors is this 'percent' 
+  # note catch for 0 percent values to +1
+  index <- round ((length(palette)-1) * percent)+1
+
+  return (palette[index])}
+```
+## Working with own functions
+My first function
+```{r}
+add <- function(x, y=1) {
+ # Sum the input x and y
+ x + y
+}
+```
+Lets test our first function
+```{r}
+add(x = 6, y = 4)
+
+```
+```{r}
+add( c(1:5), 20)
+```
+
+does this work? 
+```{r}
+#add(x=1, y=“b”)
+```
+TEsting 2nd fn
+```{r}
+## You need a “name”, “arguments” and “body”…
+rescale <- function(x) {
+ rng <-range(x)
+ (x - rng[1]) / (rng[2] - rng[1])
+}
+```
+
+```{r}
+rescale(1:10)
+```
+further testing
+```{r}
+rescale( c(1,2,NA,3,10) )
+```
+```{r}
+rescale2 <- function(x) {
+ rng <-range(x, na.rm=TRUE)
+ (x - rng[1]) / (rng[2] - rng[1])
+}
+```
+```{r}
+rescale2( c(1,2,NA,3,10) )
+
+```
+```{r}
+rescale3 <- function(x, na.rm=TRUE, plot=FALSE) {
+ if(na.rm) {
+ rng <-range(x, na.rm=na.rm)
+ } else {
+ rng <-range(x)
+ }
+ print("Hello")
+ answer <- (x - rng[1]) / (rng[2] - rng[1])
+ 
+ print("is it me you are looking for?")
+ if(plot) {
+ plot(answer, typ="b", lwd=4)
+ }
+ print("I can see it in ...")
+ return(answer)
+}
+```
+
+testing
+```{r}
+rescale3( c(1,2,NA,3,10),plot=TRUE )
+```
+
+```{r}
+rescale2( c(1,2,NA,3,10))
+```
+

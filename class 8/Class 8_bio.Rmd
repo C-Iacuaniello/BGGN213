@@ -1,0 +1,163 @@
+---
+title: "Class_8_bio"
+author: "Caroline Iacuaniello"
+date: "4/27/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## K-means clustering example
+Lets make up some data for testing the 'kmeans()" function"
+```{r}
+# Generate some example data for clustering
+tmp <- c(rnorm(30,-3), rnorm(30,3))
+x <- cbind(x=tmp, y=rev(tmp))
+plot(x)
+```
+```{r}
+km <- kmeans(x, centers = 2, nstart=20)
+km
+
+```
+```{r}
+km$size
+```
+
+
+Inspect/print the results
+Q. How many points are in each cluster?
+```{r}
+km$cluster
+```
+
+Q. What ‘component’ of your result object details
+      - cluster size?
+      - cluster assignment/membership?
+      - cluster center?
+```{r}
+km$centers
+```
+      
+Plot x colored by the kmeans cluster assignment and
+      add cluster centers as blue points
+
+```{r}
+plot(x, col=km$cluster, pch=16)
+points(km$centers, col="blue", pch = 15)
+```
+
+# Hierarchical clustering
+# First we need to calculate point (dis)similarity
+#   as the Euclidean distance between observations
+
+
+```{r}
+dist_matrix <- dist(x)
+```
+```{r}
+class(dist_matrix)
+```
+# cant view, can force by doing View(as.matrix(dist_matrix))
+
+```{r}
+View(as.matrix(dist_matrix))
+dim(as.matrix(dist_matrix))
+```
+
+# The hclust() function returns a hierarchical
+#  clustering model
+hc <- hclust(d = dist_matrix)
+# the print method is not so useful here
+hc
+Call:
+hclust(d = dist_matrix)
+Cluster method   : complete
+Distance         : euclidean
+Number of objects: 60
+```{r}
+hc <- hclust(d = dist_matrix)
+```
+
+```{r}
+hc
+# not super useful
+```
+
+```{r}
+class(hc)
+```
+```{r}
+plot(hc)
+abline(h=6, col="red") 
+cutree(hc, k=2 )
+
+```
+
+
+Cut tree to find clusters
+```{r}
+plot(x, col=cutree(hc, k=4), pch = 19)
+```
+
+
+
+
+
+# Step 1. Generate some example data for clustering
+```{r}
+x <- rbind(
+  matrix(rnorm(100, mean=0, sd = 0.3), ncol = 2),   # c1
+  matrix(rnorm(100, mean = 1, sd = 0.3), ncol = 2), # c2
+  matrix(c(rnorm(50, mean = 1, sd = 0.3),           # c3
+           rnorm(50, mean = 0, sd = 0.3)), ncol = 2))
+colnames(x) <- c("x", "y")
+```
+
+# Step 2. Plot the data without clustering
+```{r}
+plot(x)
+```
+
+# Step 3. Generate colors for known clusters
+#         (just so we can compare to hclust results)
+```{r}
+col <- as.factor( rep(c("c1","c2","c3"), each=50) )
+plot(x, col=col)
+
+```
+
+
+
+Q. Use the dist(), hclust(), plot() and cutree() functions to return 2 and 3 clusters
+
+```{r}
+distmat <- dist(x)
+hc <- hclust(distmat)
+plot(hc)
+```
+```{r}
+plot(hc)
+abline(h=2, col="blue")
+cutree(hc, h=2)
+```
+```{r}
+grps <- cutree(hc, k=3)
+table(grps)
+```
+```{r}
+#plot colored by groups
+plot(x, col=grps)
+```
+
+
+
+
+
+
+
+
+
+
