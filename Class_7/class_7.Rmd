@@ -1,0 +1,239 @@
+---
+title: "Bioinformatics_class_7"
+author: "Caroline Iacuaniello"
+date: "April 25, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Functions again
+We can source any file of R code with the 'source' () function.
+```{r}
+source("http://tinyurl.com/rescale-R")
+```
+Lets make sure things are here
+```{r}
+ls()
+```
+check rescale function is working
+
+```{r}
+rescale(1:10)
+```
+```{r,eval=FALSE}
+rescale( c(1:10, "string"))
+```
+
+```{r,eval=FALSE}
+rescale2( c(1:10, "string"))
+```
+
+
+## Function for finding missing values in two datasets
+Write a 'both_na()' function to do this
+
+```{r}
+# Lets define an example x and y
+x <- c( 1, 2, NA, 3, NA)
+y <- c(NA, 3, NA, 3, 4)
+is.na(x)
+is.na(y)
+
+```
+
+```{r}
+which(is.na(x))
+```
+
+```{r}
+which(!is.na(x))
+```
+
+```{r}
+(z <- 5)
+if(z <- 5) {
+  print("more")
+} else{print("less")}
+```
+To count, false = 0, true = 1
+```{r}
+sum(is.na(x))
+```
+
+```{r}
+is.na(x)
+is.na(y)
+```
+
+```{r}
+is.na(x) & is.na(y)
+```
+The & symbol combines
+
+```{r}
+sum(is.na(x) & is.na(y))
+```
+
+```{r}
+which(is.na(x) & is.na(y))
+```
+My first function can start from this snippet.
+```{r}
+both_na <- function(x,y) {sum(is.na(x) & is.na(y))}
+```
+Test it!
+
+```{r}
+both_na(x,y)
+```
+```{r,eval=FALSE}
+x <- c(NA, NA, NA)
+y1 <- c( 1, NA, NA)
+y2 <- c( 1, NA, NA, NA)
+both_na(x, y1)
+both_na3(x, y2)
+```
+```{r}
+x <- c( 1, 2, NA, 3, NA)
+y <- c(NA, 3, NA, 3, 4)
+ans <- both_na3(x,y)
+```
+```{r}
+ans$which
+```
+# Start with a simple version of the problem
+df1 <- data.frame(IDs=c("gene1", "gene2", "gene3"),
+ exp=c(2,1,1),
+ stringsAsFactors=FALSE)
+df2 <- data.frame(IDs=c("gene2", "gene4", "gene3", "gene5"),
+ exp=c(-2, NA, 1, 2),
+ stringsAsFactors=FALSE)
+# Simplify further to single vectors
+x <- df1$IDs
+y <- df2$IDs
+# Now what do we do? Want to find intersection, what is going on in both.
+```{r}
+x <- df1$IDs
+y <- df2$IDs
+x
+y
+
+```
+We can try the 'intersect()' function and the "%in%" functions.
+
+```{r}
+intersect(x,y)
+```
+intersect not very useful, gave answer but no more info
+
+```{r}
+x %in% y
+```
+This is checking if the first thing in x is in y, etc. Try for things in y in x.
+```{r}
+y %in% x
+```
+```{r}
+x[x %in% y]
+y[y %in% x]
+```
+Now try the cbind() function. binds inputs as columns of new matrix.
+These results yield intersects. Use logical output in '%in%' to get at our matching data.
+
+```{r}
+x[x %in% y]
+y[y %in% x]
+```
+Lets put these together as columns of a matrix
+```{r}
+cbind(x[x %in% y],
+y[y %in% x])
+```
+```{r}
+cbind( c("Hello", "Help"), c("Please", "me"))
+```
+
+```{r}
+rbind( c("Hello", "Help"), c("Please", "me"))
+```
+
+# Make a gene intersect function
+```{r}
+gene_intersect <- function(x, y) {
+ cbind( x[ x %in% y ], y[ y %in% x ] )
+}
+
+#Testing
+gene_intersect(x,y)
+```
+Try with data frame input
+```{r}
+gene_intersect2(df1,df2)
+```
+
+Looks good, this is skateboard :)
+
+```{r}
+gene_intersect3(df1, df2)
+```
+Works, but code is ugly. Make code tighter.
+```{r}
+gene_intersect4(df1,df2)
+```
+Test against some data frame with gene 2 found twice 
+```{r}
+gene_intersect4(df1, df3)
+```
+GEts a warning message but overall works.
+
+Lets use 'merge()' function for this...
+
+```{r}
+merge(df1, df2, by="IDs")
+```
+```{r}
+ source("https://bioconductor.org/biocLite.R")
+ biocLite("phyloseq")
+
+```
+```{r}
+library("phyloseq"); packageVersion("phyloseq")
+```
+
+```{r}
+# Create a pretend OTU table that you read from a file, called otumat
+otumat = matrix(sample(1:100, 100, replace = TRUE), nrow = 10, ncol = 10)
+otumat
+rownames(otumat) <- paste0("OTU", 1:nrow(otumat))
+colnames(otumat) <- paste0("Sample", 1:ncol(otumat))
+otumat
+taxmat = matrix(sample(letters, 70, replace = TRUE), nrow = nrow(otumat), ncol = 7)
+rownames(taxmat) <- rownames(otumat)
+colnames(taxmat) <- c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+taxmat
+class(otumat)
+```
+```{r}
+class(taxmat)
+```
+
+```{r}
+library("phyloseq")
+OTU = otu_table(otumat, taxa_are_rows = TRUE)
+TAX = tax_table(taxmat)
+OTU
+```
+```{r}
+TAX
+```
+```{r}
+physeq = phyloseq(OTU, TAX)
+physeq
+```
+
+```{r}
+plot_bar(physeq, fill = "Family")
+```
+
