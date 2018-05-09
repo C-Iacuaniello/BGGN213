@@ -110,4 +110,107 @@ pdb.ligand
 write.pdb(pdb.ligand, file="1hsg_ligand.pdb")
 write.pdb(pdb.protein, file="1hsg_protein.pdb")
 ```
+# Download some example PDB files
+```{r}
+ids <- c("1TND_B","1AGR_A","1TAG_A","1GG2_A","1KJY_A","4G5Q_A")
+files <- get.pdb(ids, split = TRUE)
+```
+# Extract and align the chains we are interested in
+```{r}
+pdbs <- pdbaln(files, fit = TRUE)
+```
+# Print to screen a summary of the 'pdbs' object
+```{r}
+pdbs
+
+```
+Here the returned object is of class pdbs. Note that it contains a xyz numeric matrix of aligned
+C-alpha coordinates, a ali matrix of aligned residues, and a resno matrix of aligned residue
+numbers (see the list of associated attributes (+ attr)). These attirbutes can be accessed
+using the common $ syntax in R. E.g. use pdbs$ali to access the alignment. To access the
+first few rows of the alignment matrix we use standard subsetting syntax for matrices in R:
+
+```{r}
+# Access the first 5 rows, and 8 columns
+pdbs$ali[1:5, 1:8]
+```
+
+```{r}
+# Associated residues numbers
+pdbs$resno[1:5, 1:8]
+```
+
+## skip to section 5
+5.1 Search and retrieve Adenylate kinase structures
+Below we perform a blast search of the PDB database to identify related structures to our query
+Adenylate kinase sequence. In this particular example we use function get.seq() to fetch the
+query sequence for chain A of the PDB ID 1AKE and use this as input to blast.pdb(). Note
+that get.seq() would also allow the corresponding UniProt identifier.
+
+```{r}
+# fetch sequence
+aa <- get.seq("1ake_A")
+aa
+```
+
+```{r}
+# Blast or hmmer search
+b <- blast.pdb(aa)
+```
+```{r}
+# Plot a summary of search results
+hits <- plot(b)
+# can set cutoff= any number to get more hits
+```
+```{r}
+head(hits$pdb.id)
+hits
+```
+fetch pdbs, and align,
+```{r}
+# fetch
+files <- get.pdb(hits$pdb.id, path = "pdbs", split = TRUE, gzip =
+TRUE)
+```
+```{r}
+# Align structures
+pdbs <- pdbaln(files)
+```
+```{r}
+# Vector containing PDB codes
+ids <- basename.pdb(pdbs$id)
+```
+
+```{r}
+# Draw schematic alignment
+plot(pdbs, labels=ids)
+```
+```{r}
+# find invariant core
+core <- core.find(pdbs)
+# superimpose all structures to core
+pdbs$xyz = pdbfit(pdbs, core)
+# Perform PCA
+pc.xray <- pca(pdbs)
+```
+
+```{r}
+# Calculate RMSD
+rd <- rmsd(pdbs)
+# Structure-based clustering
+hc.rd <- hclust(dist(rd))
+grps.rd <- cutree(hc.rd, k=3)
+plot(pc.xray, 1:2, col="grey50", bg=grps.rd, pch=21, cex=1)
+```
+
+```{r}
+# Visualize first principal component
+mktrj(pc.xray, pc=1, file="pc_1.pdb")
+```
+
+```{r}
+#view in r with new code
+# download new
+
+```
 
