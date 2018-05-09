@@ -17,9 +17,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
-```
+
 
 ## Including Plots
 
@@ -62,7 +60,7 @@ plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
 s1 <- read.pdb("4AKE")
 s1
 ```
-
+# what is point of figure?
 ```{r}
 library(bio3d)
 # a drug target, want to know what do. comparing 3 structures. input is the protein database?
@@ -70,7 +68,7 @@ library(bio3d)
 
                 
 
-x <- "4AKE"
+x <- "1AKE"
 
 sx <- read.pdb(x) # kinase with drug
 
@@ -84,7 +82,7 @@ sx.b <- sx.chainA$atom$b
 # Black, grey boxes are regions between peaks. ALpha helixes. 
 # to combine three curves use line fn
 
-plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+plotb3(sx.b, sse=sx.chainA, typ="l", ylab="Bfactor")
 
 ```
 
@@ -92,15 +90,20 @@ plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
 sx
 ```
 ```{r}
-x <- "4AKE"
+x <- "1AKE"
 pdb_function <- function(x){
 sx <- read.pdb(x)
 sx.chainA <- trim.pdb(sx, chain="A", elety="CA")
 sx.b <- sx.chainA$atom$b
-plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")}
+plotb3(sx.b, sse=sx.chainA, typ="l", ylab="Bfactor")}
 x
 pdb_function
 pdb_function(x)
+```
+```{r}
+x <- "4AKE"
+y <- "1AKE"
+z <- "1E4Y"
 ```
 
 ```{r}
@@ -112,13 +115,32 @@ pdb_function <- function(protein){
 sprotein <- read.pdb(protein)
 sprotein.chainA <- trim.pdb(sprotein, chain="A", elety="CA")
 sprotein.b <- sprotein.chainA$atom$b
-plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")}
+plotbx(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")}
+
+```
+
+
+
+```{r}
+protein <- data.frame(x = "4AKE", y = "1AKE", z = "1E4Y")
+pdb_function <- function(protein){
+sprotein <- read.pdb(protein)
+sprotein.chainA <- trim.pdb(sprotein, chain="A", elety="CA")
+sprotein.b <- sprotein.chainA$atom$b
+return(plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor"))
+}
 protein
 pdb_function
-pdb_function(protein)
+#pdb_function(protein)
 ```
+
 ```{r}
-protein <- x(c("4AKE", "1AKE", "1E4Y"))
+x <- "4AKE"
+y <- "1AKE"
+z <- "1E4Y"
 
-```
-
+pdb_function <- function(x){
+sx <- read.pdb(x)
+sx.chainA <- trim.pdb(sx, chain="A", elety="CA")
+sx.b <- sx.chainA$atom$b
+plotb3(sx.b, sse=sx.chainA, typ="l", ylab="Bfactor")}
