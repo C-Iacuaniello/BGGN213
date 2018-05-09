@@ -24,4 +24,90 @@ percent <- (p$Total / sum(p$Total))*100
 names(percent) <- row.names(p)
 percent
 ```
+```{r}
+## Using Bio3D
+library(bio3d)
+
+```
+
+Read in HIV-pr structure
+```{r}
+pdb <- read.pdb("1hsg")
+pdb
+```
+# find the attributes
+```{r}
+attributes(pdb)
+```
+```{r}
+# look at atoms header
+head(pdb$atom)
+```
+```{r}
+# Print a subset of $atom data for the first two atoms
+pdb$atom[1:2, c("eleno", "elety", "x","y","z")]
+```
+
+```{r}
+# Note that individual $atom records can also be accessed like this
+pdb$atom$elety[1:2]
+```
+
+```{r}
+# Which allows us to do the following
+
+plot.bio3d(pdb$atom$b[pdb$calpha], sse=pdb, typ="l", ylab="Bfactor")
+```
+```{r}
+str(pdb$atom)
+```
+# Print a summary of the coordinate data in $xyz
+```{r}
+pdb$xyz
+```
+# Examine the row and column dimensions
+```{r}
+dim(pdb$xyz)
+```
+# Print coordinates for the first two atom
+
+```{r}
+pdb$xyz[ 1, atom2xyz(1:2) ]
+```
+# Select all C-alpha atoms (return their indices)
+```{r}
+ca.inds <- atom.select(pdb, "calpha")
+ca.inds
+```
+Q8. Use the Bio3D write.pdb() function to write out a protein only PDB file for viewing in
+VMD. Also write out a second separate PDB file for the ligand with residue name MK1
+HINT: In Bio3D you can use the trim.pdb() function together with the pub object and your atom
+selections such as atom.select(pdb, ’protein’) for the fist file and atom.select(pdb, ‘ligand’) for
+the second.
+```{r}
+inds.ligand <- atom.select(pdb, "ligand")
+inds.protein <- atom.select(pdb, "protein")
+inds.protein
+```
+
+#check what have
+```{r}
+pdb$atom[inds.ligand$atom,]
+```
+
+```{r}
+pdb$atom[inds.protein$atom,]
+```
+# what want is to output new pdb file
+
+```{r}
+pdb.ligand <- trim.pdb(pdb, inds=inds.ligand)
+pdb.protein <- trim.pdb(pdb, inds=inds.protein)
+pdb.ligand
+```
+
+```{r}
+write.pdb(pdb.ligand, file="1hsg_ligand.pdb")
+write.pdb(pdb.protein, file="1hsg_protein.pdb")
+```
 
