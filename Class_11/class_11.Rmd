@@ -1,0 +1,25 @@
+---
+title: "bio_class_11"
+author: "caroline iacuaniello"
+date: "May 9, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### PDB statistics
+
+Import PDB statistics CSV file and calculate percent structures 
+
+```{r}
+p <- read.csv("Data Export Summary.csv", row.names = 1)
+p
+```
+```{r}
+percent <- (p$Total / sum(p$Total))*100
+names(percent) <- row.names(p)
+percent
+```
+
