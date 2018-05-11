@@ -38,9 +38,20 @@ write.pdb(ligand, "1hsg_ligand.pdb")
 write.pdb(protein, "1hsg_protein.pdb")
 
 ```
+translate back to pdb so can open in vmd
+
+```{r}
+library(bio3d)
+res <- read.pdb("all.pdbqt", multi=TRUE)
+write.pdb(res, "results.pdb")
+```
 
 
-
+```{r}
+# res <- read.pdb("all.pdbqt", multi=TRUE)
+ori <- read.pdb("1hsg_ligand.pdbqt")
+rmsd(ori, res)
+```
 
 
 
