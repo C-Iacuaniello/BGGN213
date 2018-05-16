@@ -1,0 +1,78 @@
+---
+title: "class_13"
+author: "caroline iacuaniello"
+date: "May 16, 2018"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## 1000 Genome project data
+Read 1000 genome data for MXL dataset
+```{r}
+genotype<-read.csv("373531-SampleGenotypes-Homo_sapiens_Variation_Sample_rs12936231.csv")
+```
+```{r}
+table(genotype[,2]) / nrow(genotype)*100
+```
+```{r}
+library(seqinr)
+library(gtools)
+```
+### Base quality scores from fastqsanger
+```{r}
+library(seqinr)
+library(gtools)
+phred <- asc( s2c("DDDDCDEDCDDDDBBDDDCC@") ) - 33
+phred 
+```
+
+
+```{r}
+# install.packages("seqinr")
+
+```
+
+```{r}
+# install.packages("gtools")
+```
+## RNA-seq results analysis (interested in assessing genetic differences on a population scale. processed
+about ~230 samples and did the normalization on a genome level.  want to find
+whether there is any association of the 4 asthma-associated SNPs (rs8067378…) on
+ORMDL3 expression. )
+```{r}
+geno <- read.table("rs8067378_ENSG00000172057.6.txt")
+```
+
+```{r}
+summary(geno)
+```
+## we want to know if genotype g/g is different expression than a/a
+```{r}
+gg <- summary(geno$exp[geno$geno == "G/G"])
+ag <- summary(geno$exp[geno$geno == "A/G"])
+aa <- summary(geno$exp[geno$geno == "A/A"])
+
+```
+## want to make a nice boxplot, my attempt...
+
+```{r}
+boxplot(gg)
+boxplot(ag)
+boxplot(aa)
+```
+```{r}
+boxplot(exp ~ geno, data=geno, notch = TRUE)
+```
+
+# how about a nice result? ggplot
+```{r}
+library(ggplot2)
+
+p <- ggplot(geno, aes(geno,exp)) + geom_boxplot(notch = TRUE)
+p
+```
+
