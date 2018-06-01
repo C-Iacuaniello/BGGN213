@@ -1,0 +1,90 @@
+---
+title: "class_18"
+author: "caroline iacuaniello"
+date: "June 1, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+## try http:// if https:// URLs are not supported
+# source("https://bioconductor.org/biocLite.R")
+# biocLite("GenomicDataCommons")
+```
+
+```{r}
+library("GenomicDataCommons")
+```
+```{r}
+# source("https://bioconductor.org/biocLite.R")
+# biocLite("maftools")
+
+```
+
+```{r}
+library("maftools")
+```
+
+```{r}
+GenomicDataCommons::status()
+```
+```{r}
+#cases_by_project <- cases() %>%
+ # facet("project.project_id") %>%
+ # aggregations()
+#head(cases_by_project)
+```
+```{r}
+#cases_by_project$project.project_id
+```
+```{r}
+#x <- cases_by_project$project.project_id$doc_count
+#x
+#x2 <- cases_by_project$project.project_id$key
+#TCGA <- cases_by_project$project.project_id$key[27]
+#TCGA
+```
+
+```{r}
+#mycol <- rep("lightblue",length(x))
+#mycol[x2=="TCGA-PAAD"] <- "red"
+#ind <- which(x2=="TCGA-PAAD")
+#mycol[ind] <- "red"
+#barplot(x, log="y", las=2,names.arg =x2,col=mycol)
+```
+```{r}
+library(bio3d)
+```
+
+```{r}
+lecseq <- read.fasta("lecture18_sequences.fa")
+```
+# look for amino acids that are not matched
+```{r}
+conserv(lecseq)
+```
+```{r}
+seq <- which(conserv(lecseq)<1)
+seq
+```
+# need 8-9 amino acid sequence surrounding mutants
+# want to extract sequence x-8 to x+8 to encompess all possible mutants. 
+```{r}
+gaps <- gap.inspect("seq")
+gaps
+```
+
+```{r}
+#seq1 <- c(lecseq)
+#seq1
+#seq2 <- seq1[,33-50]
+```
+
+
+
+
+
+
+
