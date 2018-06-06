@@ -1,0 +1,111 @@
+---
+title: "find_a_gene"
+author: "caroline iacuaniello"
+date: "June 4, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## to begin read in aligned fasta.txt
+```{r}
+read.table("aln-fasta.txt")
+```
+
+## use seaview to open clustal format, save to .fst, read into R with bio3d
+
+```{r}
+library(bio3d)
+align <- read.fasta("alignment_obelia.fst")
+```
+# calculate sequence identity
+```{r}
+
+seid <- seqidentity(align)
+# seid
+```
+## Generate heatmap
+```{r}
+par(cex.main=0.6)
+heatmap(seid, cexRow = 0.6, cexCol = 0.6, margins = c(6,6), main = "Heatmap of Sequence Identity")
+```
+
+### most similar atomic resolution structures to your aligned sequences
+```{r}
+consens <- consensus(align)
+# consens
+print(consens$seq)
+```
+
+
+
+### Blast the consensus
+```{r}
+blastgo <- blast.pdb(consens$seq)
+blastgo
+```
+
+```{r}
+hits <- plot(blastgo)
+head(hits$pdb.id)
+head
+```
+
+```{r}
+files <- get.pdb(hits$pdb.id, path = "pdbs", split = TRUE, gzip = TRUE)
+```
+```{r}
+pdbs <- pdbaln(files)
+ids <- basename.pdb(pdbs$id)
+# Draw schematic alignment
+plot(pdbs, labels=ids)
+```
+```{r}
+# Calculate sequence conservation
+cons <- conserv(pdbs, method="entropy22")
+# SSE annotations
+sse <- pdbs2sse(pdbs, ind=1, rm.gaps=FALSE)
+# Plot conservation per residue
+plotb3(cons, sse=sse, ylab="Sequence entropy")
+```
+```{r}
+anno <- pdb.annotate(ids)
+print(unique(anno$source))
+```
+
+```{r}
+# find invariant core
+core <- core.find(pdbs)
+# superimpose all structures to core
+pdbs$xyz = pdbfit(pdbs, core)
+# Perform PCA
+pc.xray <- pca(pdbs)
+```
+```{r}
+# Calculate RMSD
+rd <- rmsd(pdbs)
+# Structure-based clustering
+hc.rd <- hclust(dist(rd))
+grps.rd <- cutree(hc.rd, k=3)
+plot(pc.xray, 1:2, col="grey50", bg=grps.rd, pch=21, cex=1)
+```
+
+```
+
+```{r}
+pdb <- read.pdb("1el4")
+pdb
+```
+
+```{r}
+attributes(pdb)
+head(pdb$atom)
+pdb$atom[1:2,c("eleno", "elety","x","y","z")]
+```
+
+```{r}
+
+```
+
