@@ -2,7 +2,9 @@
 title: "find_a_gene"
 author: "caroline iacuaniello"
 date: "June 4, 2018"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
